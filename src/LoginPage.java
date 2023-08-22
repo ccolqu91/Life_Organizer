@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class LoginPage implements ActionListener {
 
     private JTextField userText;
-    private JPasswordField passwordText;
+    private JTextField passwordText;
 
     private JLabel successLabel;
 
@@ -17,23 +17,23 @@ public class LoginPage implements ActionListener {
 
 
         JButton loginButton = new JButton("Login");
-        loginButton.setBounds(40,80,200,35);
+        loginButton.setBounds(150,80,200,35);
         loginButton.setActionCommand("login");
         loginButton.addActionListener(this);
 
         JButton newUserButton = new JButton("Create New Account");
-        newUserButton.setBounds(240,80,200,35);
+        newUserButton.setBounds(150,115,200,35);
         newUserButton.setActionCommand("newUser");
         newUserButton.addActionListener(this);
 
-        JLabel userLabel = new JLabel("user");
+        JLabel userLabel = new JLabel("Username");
         userLabel.setBounds(50,20,80,25);
 
-        JLabel passwordLabel = new JLabel("password");
+        JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setBounds(50,50,80,25);
 
         successLabel = new JLabel("");
-        successLabel.setBounds(10,110,300,25);
+        successLabel.setBounds(150,150,300,25);
 
 
         userText = new JTextField(20);
@@ -57,9 +57,8 @@ public class LoginPage implements ActionListener {
         loginFrame.add(loginPanel);
         loginFrame.setSize(500,300);
         loginFrame.add(loginPanel,BorderLayout.CENTER);
-        //loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         loginFrame.setTitle("Life Organizer - Login");
-        //loginFrame.pack();
         loginFrame.setVisible(true);
     }
 
@@ -70,11 +69,11 @@ public class LoginPage implements ActionListener {
         String user = userText.getText();
         String password = passwordText.getText();
 
+        Database db = new Database();
+
         if("login".equals(command)){
-            System.out.println("Login button clicked");
-            System.out.println(user + "," + password);
-            if(user.equals("chris") && password.equals("1234")){
-                successLabel.setText("Login Sucessful");
+            if(db.authenticateUser(user,password)){
+                successLabel.setText("Login Successful");
             }
             else{
                 successLabel.setText("Incorrect Login");
@@ -82,6 +81,7 @@ public class LoginPage implements ActionListener {
         }
         else if("newUser".equals(command)){
             System.out.println("New user button clicked");
+            SwingUtilities.invokeLater(() -> new RegisterUserPage());
         }
     }
 }
