@@ -5,37 +5,83 @@ import java.awt.event.ActionListener;
 
 public class LoginPage implements ActionListener {
 
-    private int count = 0;
-    private JFrame frame;
-    private JPanel panel;
-    private JLabel label;
+    private JTextField userText;
+    private JPasswordField passwordText;
+
+    private JLabel successLabel;
 
     public LoginPage(){
         //creation of objects
-        frame = new JFrame();
-        panel = new JPanel();
-        label = new JLabel("Number of clicks:"+ count);
-        JButton button = new JButton("click");
-        button.addActionListener(this);
+        JFrame loginFrame = new JFrame();
+        JPanel loginPanel = new JPanel();
+
+
+        JButton loginButton = new JButton("Login");
+        loginButton.setBounds(40,80,200,35);
+        loginButton.setActionCommand("login");
+        loginButton.addActionListener(this);
+
+        JButton newUserButton = new JButton("Create New Account");
+        newUserButton.setBounds(240,80,200,35);
+        newUserButton.setActionCommand("newUser");
+        newUserButton.addActionListener(this);
+
+        JLabel userLabel = new JLabel("user");
+        userLabel.setBounds(50,20,80,25);
+
+        JLabel passwordLabel = new JLabel("password");
+        passwordLabel.setBounds(50,50,80,25);
+
+        successLabel = new JLabel("");
+        successLabel.setBounds(10,110,300,25);
+
+
+        userText = new JTextField(20);
+        userText.setBounds(150,20,165,25);
+
+        passwordText = new JPasswordField();
+        passwordText.setBounds(150,50,165,25);
 
         //panel settings
-        panel.setBorder(BorderFactory.createEmptyBorder(30,30,10,30));
-        panel.setLayout(new GridLayout(0,1));
-        panel.add(button);
-        panel.add(label);
+        loginPanel.setBorder(BorderFactory.createEmptyBorder(30,30,10,30));
+        loginPanel.setLayout(null);
+        loginPanel.add(userLabel);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(userText);
+        loginPanel.add(passwordText);
+        loginPanel.add(loginButton);
+        loginPanel.add(newUserButton);
+        loginPanel.add(successLabel);
 
         //frame settings
-        frame.add(panel,BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("Life Organizer - Login");
-        frame.pack();
-        frame.setVisible(true);
+        loginFrame.add(loginPanel);
+        loginFrame.setSize(500,300);
+        loginFrame.add(loginPanel,BorderLayout.CENTER);
+        //loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.setTitle("Life Organizer - Login");
+        //loginFrame.pack();
+        loginFrame.setVisible(true);
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        count++;
-        label.setText(("Number of clicks:"+ count));
+        String command = e.getActionCommand();
+        String user = userText.getText();
+        String password = passwordText.getText();
 
+        if("login".equals(command)){
+            System.out.println("Login button clicked");
+            System.out.println(user + "," + password);
+            if(user.equals("chris") && password.equals("1234")){
+                successLabel.setText("Login Sucessful");
+            }
+            else{
+                successLabel.setText("Incorrect Login");
+            }
+        }
+        else if("newUser".equals(command)){
+            System.out.println("New user button clicked");
+        }
     }
 }
