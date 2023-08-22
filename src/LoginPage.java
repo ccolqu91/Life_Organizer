@@ -74,6 +74,7 @@ public class LoginPage implements ActionListener {
         if("login".equals(command)){
             if(db.authenticateUser(user,password)){
                 successLabel.setText("Login Successful");
+                SwingUtilities.invokeLater(() -> new Dashboard());
             }
             else{
                 successLabel.setText("Incorrect Login");

@@ -74,18 +74,15 @@ public class RegisterUserPage implements ActionListener {
 
             String username = newUserText.getText();
             String password = new String(newPasswordText.getPassword());
-
-            if (db.registerUser(username, password)) {
-                System.out.println("details are now stored in the database, you can now log in");
-                successLabel.setText("details are now stored in the database, you can now log in");
-            } else {
-                System.out.println("Error registering user or user already exists");
-                successLabel.setText("Error registering user or user already exists");
+            if(db.isUsernameTaken(username) == false){
+                db.registerUser(username, password);
+                System.out.println("Your details are now in the system");
+                successLabel.setText("Your details are now in the system");
             }
-
-
-            System.out.println("details are now stored in the database, you can now log in");
-            successLabel.setText("details are now stored in the database, you can now log in");
+            else {
+                System.out.println("Username is already taken, please try another");
+                successLabel.setText("Username is already taken, please try another");
+            }
         }
         else if("login".equals(command)){
             SwingUtilities.invokeLater(() -> new LoginPage());

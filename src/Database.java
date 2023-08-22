@@ -23,7 +23,7 @@ public class Database {
         }
     }
 
-    public boolean registerUser(String username, String password){
+    public boolean registerUser(String username, String password) {
 
         String url = "jdbc:sqlite:users.db";
         String sql = "INSERT INTO users(username, password) VALUES(?,?)";
@@ -43,7 +43,25 @@ public class Database {
 
     }
 
-    public boolean authenticateUser(String username, String password) {
+    public boolean isUsernameTaken(String username) {
+        String query = "SELECT username FROM users WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+            public boolean authenticateUser(String username, String password) {
         String query = "SELECT password FROM users WHERE username = ?";
 
         try (Connection conn = DriverManager.getConnection(URL);
