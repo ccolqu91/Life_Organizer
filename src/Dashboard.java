@@ -43,7 +43,7 @@ public class Dashboard implements ActionListener {
         todoScrollPane.setBounds(1400,100,120,480);
 
         //Monthly view
-        monthViewPanel = new JPanel(new GridLayout(7,6));
+        monthViewPanel = new JPanel(new GridLayout(7,7));
         monthViewPanel.setBounds(150,150,950,500);
         fillMonthView(monthViewPanel);
 
@@ -71,33 +71,49 @@ public class Dashboard implements ActionListener {
     private void fillMonthView(JPanel monthViewPanel){
         monthViewPanel.removeAll();
 
-        LocalDate dateIterator = currentMonth;
-        int firstDayOfWeek = dateIterator.getDayOfWeek().getValue();
-        int daysInMonth = currentMonth.lengthOfMonth();
+        String[] dayNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        for (String dayName : dayNames) {
+            JLabel dayLabel = new JLabel(dayName, SwingConstants.CENTER);
+            monthViewPanel.add(dayLabel);
+        }
 
+        LocalDate dateIterator = currentMonth;
+
+        int firstDayOfWeek = dateIterator.getDayOfWeek().getValue();
+
+        if(firstDayOfWeek == 7){
+            firstDayOfWeek = 0;
+        }
+        else{
+            firstDayOfWeek++;
+        }
         for(int i = 1; i < firstDayOfWeek; i++){
             monthViewPanel.add(new JLabel(""));
         }
 
-        for(int day = 1; day <= daysInMonth; day++){
+        int daysInMonth = currentMonth.lengthOfMonth();
+        //System.out.println("Days in Month: "+daysInMonth);
+        for(int day = 1; day <= daysInMonth; day++) {
             JButton dayButton = new JButton(String.valueOf(day));
-            dayButton.setFont(new Font("Ariel",Font.PLAIN,8));
-            dayButton.setMargin(new Insets(1,1,1,1));
-            dayButton.setActionCommand("day" + day);
+            dayButton.setFont(new Font("Ariel", Font.PLAIN, 8));
+            dayButton.setMargin(new Insets(1, 1, 1, 1));
+            dayButton.setActionCommand("day:" + day);
             dayButton.addActionListener(this);
             monthViewPanel.add(dayButton);
             dateIterator = dateIterator.plusDays(1);
-
-        int remainingDays = 42 - (daysInMonth + firstDayOfWeek - 1);
-        for(int i = 0; i < remainingDays; i++){
-            monthViewPanel.add(new JLabel("e"));
-            }
-
-        monthViewPanel.revalidate();
-        monthViewPanel.repaint();
         }
 
-    }
+            int occupiedCells = firstDayOfWeek + daysInMonth - 1;
+            int remainingDays = 42 - occupiedCells;
+
+            for(int i = 0; i < remainingDays; i++){
+                monthViewPanel.add(new JLabel(""));
+            }
+
+            monthViewPanel.revalidate();
+            monthViewPanel.repaint();
+        }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
