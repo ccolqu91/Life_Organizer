@@ -137,6 +137,7 @@ public class Dashboard implements ActionListener {
             int day = Integer.parseInt(daystr);
             LocalDate selectedDate = currentMonth.withDayOfMonth(day);
             todoListModel.addElement("Task for "+ selectedDate);
+            SwingUtilities.invokeLater(() -> new DailyView(selectedDate));
 
         }
 
