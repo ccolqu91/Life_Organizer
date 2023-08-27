@@ -143,15 +143,17 @@ class CreateTask implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if("set".equals(e.getActionCommand())){
+        if("set".equals(e.getActionCommand())) {
 
             int startHourValue = (Integer) startHourModel.getValue();
             int startMinuteValue = (Integer) startMinuteModel.getValue();
             int endHourValue = (Integer) endHourModel.getValue();
             int endMinuteValue = (Integer) endMinuteModel.getValue();
 
+            System.out.println(startHourValue);
+            System.out.println(endHourValue);
 
-            String formattedStartHour = String.format("%02d",startHourValue);
+            String formattedStartHour = String.format("%02d", startHourValue);
             String formattedStartMinute = String.format("%02d", startMinuteValue);
             String formattedEndHour = String.format("%02d", endHourValue);
             String formattedEndMinute = String.format("%02d", endMinuteValue);
@@ -161,8 +163,26 @@ class CreateTask implements ActionListener {
             String endTime = formattedEndHour + ":" + formattedEndMinute;
             String taskDate = date.toString();
 
-            Task newTask = new Task(taskName, startTime, endTime, taskDate);
-            TaskDataModel.getInstance().addTask(newTask);
+            if (startHourValue > endHourValue) {
+                JFrame errorFrame = new JFrame("Times not possible");
+                errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                errorFrame.setSize(400, 300);
+                JLabel errorLabel = new JLabel("The event starts after it has finished please check the times");
+                errorFrame.add(errorLabel);
+                errorFrame.setVisible(true);
+            }
+            else if (startHourValue == endHourValue && startMinuteValue > endMinuteValue) {
+                JFrame errorFrame = new JFrame("Times not possible");
+                errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                errorFrame.setSize(400, 300);
+                JLabel errorLabel = new JLabel("The event starts after it has finished please check the times");
+                errorFrame.add(errorLabel);
+                errorFrame.setVisible(true);
+            }
+            else{
+                Task newTask = new Task(taskName, startTime, endTime, taskDate);
+                TaskDataModel.getInstance().addTask(newTask);
+            }
         }
 
     }
