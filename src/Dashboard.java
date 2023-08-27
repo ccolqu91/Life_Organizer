@@ -6,41 +6,45 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class Dashboard implements ActionListener {
+public class Dashboard implements ActionListener, TaskObserver {
 
+    private JFrame dashboardFrame;
+    private JPanel dashboardPanel;
     private LocalDate currentMonth;
-    private DefaultListModel<String> todoListModel;
-    private JList<String> todoList;
     private JLabel monthLabel;
     private JPanel monthViewPanel;
-    private LocalDate dateIterator;
+    //private LocalDate dateIterator;
+    private JButton logoutButton;
+    private JButton prevMonthButton;
+    private JButton nextMonthButton;
+    private JPanel todoPanel;
     public Dashboard(){
         //Create objects
-        JFrame dashboardFrame = new JFrame();
-        JPanel dashboardPanel = new JPanel();
+        dashboardFrame = new JFrame();
+        dashboardPanel = new JPanel();
 
-        JButton logoutButton = new JButton("Logout");
+        logoutButton = new JButton("Logout");
         logoutButton.setBounds(420,10,100,25);
         logoutButton.setActionCommand("logout");
         logoutButton.addActionListener(this);
 
-        JButton prevMonthButton = new JButton("<");
+        prevMonthButton = new JButton("<");
         prevMonthButton.setBounds(525,100,50,25);
         prevMonthButton.setActionCommand("prev");
         prevMonthButton.addActionListener(this);
 
-        JButton nextMonthButton = new JButton((">"));
+        nextMonthButton = new JButton((">"));
         nextMonthButton.setBounds(700,100,50,25);
         nextMonthButton.setActionCommand("next");
         nextMonthButton.addActionListener(this);
 
         currentMonth = LocalDate.now().withDayOfMonth(1);
 
-        //to do list
-        todoListModel = new DefaultListModel<>();
-        todoList = new JList<>(todoListModel);
-        JScrollPane todoScrollPane = new JScrollPane(todoList);
-        todoScrollPane.setBounds(1400,100,120,480);
+        //to do panel
+        todoPanel = new JPanel();
+        todoPanel.setLayout(new BoxLayout(todoPanel, BoxLayout.Y_AXIS));
+        JScrollPane todoScrollPane = new JScrollPane(todoPanel);
+        todoScrollPane.setBounds(1125,175,400,480);
 
         //Monthly view
         monthViewPanel = new JPanel(new GridLayout(7,7));
@@ -49,9 +53,6 @@ public class Dashboard implements ActionListener {
 
         monthLabel = new JLabel(currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + currentMonth.getYear());
         monthLabel.setBounds(600,100,100,25);
-
-
-
 
         dashboardPanel.setBorder(BorderFactory.createEmptyBorder(30,30,10,30));
         dashboardPanel.add(monthLabel);
@@ -66,6 +67,7 @@ public class Dashboard implements ActionListener {
         dashboardFrame.setSize(3000,3000);
         dashboardFrame.setTitle("Life Organizer - Dashboard");
         dashboardFrame.setVisible(true);
+        TaskDataModel.getInstance().addObserver(this);
     }
 
     private void fillMonthView(JPanel monthViewPanel){
@@ -136,10 +138,29 @@ public class Dashboard implements ActionListener {
             String daystr = command.split(":")[1];
             int day = Integer.parseInt(daystr);
             LocalDate selectedDate = currentMonth.withDayOfMonth(day);
-            todoListModel.addElement("Task for "+ selectedDate);
             SwingUtilities.invokeLater(() -> new DailyView(selectedDate));
 
         }
 
+    }
+
+    @Override
+    public void taskAdded(Task task) {
+        JButton taskButton = new JButton("<html>Task: " + task.name + "<br>Date: " + task.date + "<br>Start Time: " + task.startTime + "<br>End Time: " + task.endTime + "</html>");
+
+        JLabel dummyLabel = new JLabel("<html>Task: " + task.name + "<br>Date: " + task.date + "<br>Start Time: " + task.startTime + "<br>End Time: " + task.endTime + "</html>");
+        Dimension preferredSize = dummyLabel.getPreferredSize();
+        taskButton.setPreferredSize(preferredSize);
+        taskButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,preferredSize.height));
+        taskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("todo list updated");
+
+
+            }
+        });
+        todoPanel.add(taskButton);
+        todoPanel.revalidate();
     }
 }

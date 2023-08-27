@@ -5,23 +5,25 @@ import java.awt.event.ActionListener;
 
 public class LoginPage implements ActionListener {
 
+    private JFrame loginFrame;
+    private JPanel loginPanel;
     private JTextField userText;
     private JTextField passwordText;
-
     private JLabel successLabel;
-
+    private JButton loginButton;
+    private JButton newUserButton;
     public LoginPage(){
-        //creation of objects
-        JFrame loginFrame = new JFrame();
-        JPanel loginPanel = new JPanel();
+
+        loginFrame = new JFrame();
+        loginPanel = new JPanel();
 
 
-        JButton loginButton = new JButton("Login");
+        loginButton = new JButton("Login");
         loginButton.setBounds(150,80,200,35);
         loginButton.setActionCommand("login");
         loginButton.addActionListener(this);
 
-        JButton newUserButton = new JButton("Create New Account");
+        newUserButton = new JButton("Create New Account");
         newUserButton.setBounds(150,115,200,35);
         newUserButton.setActionCommand("newUser");
         newUserButton.addActionListener(this);

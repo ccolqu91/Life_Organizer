@@ -5,27 +5,30 @@ import java.awt.event.ActionListener;
 
 public class RegisterUserPage implements ActionListener {
 
+    private JFrame registerFrame;
+    private JPanel registerPanel;
     private JTextField newUserText;
     private JPasswordField newPasswordText;
-
     private JLabel successLabel;
+    private JButton confirmUserButton;
+    private JButton returnToLoginButton;
 
     public RegisterUserPage(){
 
-        //creation of objects
-        JFrame registerFrame = new JFrame();
-        JPanel registerPanel = new JPanel();
+
+        registerFrame = new JFrame();
+        registerPanel = new JPanel();
 
 
-        JButton confirmUserButton = new JButton("Confirm User Details");
+        confirmUserButton = new JButton("Confirm User Details");
         confirmUserButton.setBounds(150,80,200,35);
         confirmUserButton.setActionCommand("details");
         confirmUserButton.addActionListener(this);
 
-        JButton ReturnToLoginButton = new JButton("Return to Login");
-        ReturnToLoginButton.setBounds(150,115,200,35);
-        ReturnToLoginButton.setActionCommand("login");
-        ReturnToLoginButton.addActionListener(this);
+        returnToLoginButton = new JButton("Return to Login");
+        returnToLoginButton.setBounds(150,115,200,35);
+        returnToLoginButton.setActionCommand("login");
+        returnToLoginButton.addActionListener(this);
 
         JLabel userLabel = new JLabel("New Username");
         userLabel.setBounds(50,20,100,25);
@@ -51,7 +54,7 @@ public class RegisterUserPage implements ActionListener {
         registerPanel.add(newUserText);
         registerPanel.add(newPasswordText);
         registerPanel.add(confirmUserButton);
-        registerPanel.add(ReturnToLoginButton);
+        registerPanel.add(returnToLoginButton);
         registerPanel.add(successLabel);
 
         //frame settings
