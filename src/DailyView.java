@@ -103,11 +103,12 @@ public class DailyView implements ActionListener, TaskObserver {
     private void refreshDailyList(){
         dailyListPanel.removeAll();
 
-        List<Task> tasksForDay = TaskDataModel.getInstance().getTasksForDate(currentDay);
-        tasksForDay.sort((t1,t2) -> t1.startTime.compareTo(t2.startTime));
+        List<Task> tasksForDay = TaskDataModel.getInstance().getTasksForDateSortedByTime(currentDay);
 
-        for(Task task : tasksForDay){
-            addTaskButton(task);
+        for(Task task : tasksForDay) {
+            if (task.date.equals(currentDay.toString())) {
+                addTaskButton(task);
+            }
         }
         dailyListPanel.revalidate();
         dailyListPanel.repaint();

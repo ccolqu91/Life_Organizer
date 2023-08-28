@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TaskDataModel {
@@ -41,5 +42,24 @@ public class TaskDataModel {
     public List<Task> getSortedTasks() {
         Collections.sort(tasks);
         return tasks;
+    }
+
+    public List<Task> getTasksForDateSortedByTime(LocalDate date) {
+        List<Task> tasksForDate = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if (task.date.equals(date.toString())) {
+                tasksForDate.add(task);
+            }
+        }
+
+        Collections.sort(tasksForDate, new Comparator<Task>() {
+            @Override
+            public int compare(Task t1, Task t2) {
+                return t1.startTime.compareTo(t2.startTime);
+            }
+        });
+
+        return tasksForDate;
     }
 }
