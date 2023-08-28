@@ -12,8 +12,14 @@ public class Task implements Comparable<Task>{
     }
 
 
-    public int compareTo(Task other){
-        return this.date.compareTo(other.date);
+    public int compareTo(Task otherTask){
+        int dateComparison = this.date.compareTo(otherTask.date);
+        if (dateComparison == 0){
+            return this.startTime.compareTo(otherTask.startTime);
+        }
+        else{
+            return dateComparison;
+        }
     }
 
 

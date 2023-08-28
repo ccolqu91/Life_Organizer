@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class Dashboard implements ActionListener, TaskObserver {
@@ -40,13 +41,12 @@ public class Dashboard implements ActionListener, TaskObserver {
 
         currentMonth = LocalDate.now().withDayOfMonth(1);
 
-        //to do panel
+
         todoPanel = new JPanel();
         todoPanel.setLayout(new BoxLayout(todoPanel, BoxLayout.Y_AXIS));
         JScrollPane todoScrollPane = new JScrollPane(todoPanel);
         todoScrollPane.setBounds(1125,175,400,480);
 
-        //Monthly view
         monthViewPanel = new JPanel(new GridLayout(7,7));
         monthViewPanel.setBounds(150,150,950,500);
         fillMonthView(monthViewPanel);
@@ -94,7 +94,7 @@ public class Dashboard implements ActionListener, TaskObserver {
         }
 
         int daysInMonth = currentMonth.lengthOfMonth();
-        //System.out.println("Days in Month: "+daysInMonth);
+
         for(int day = 1; day <= daysInMonth; day++) {
             JButton dayButton = new JButton(String.valueOf(day));
             dayButton.setFont(new Font("Ariel", Font.PLAIN, 8));
@@ -146,21 +146,31 @@ public class Dashboard implements ActionListener, TaskObserver {
 
     @Override
     public void taskAdded(Task task) {
-        JButton taskButton = new JButton("<html>Task: " + task.name + "<br>Date: " + task.date + "<br>Start Time: " + task.startTime + "<br>End Time: " + task.endTime + "</html>");
+        // Clear the existing buttons from the panel
+        todoPanel.removeAll();
 
-        JLabel dummyLabel = new JLabel("<html>Task: " + task.name + "<br>Date: " + task.date + "<br>Start Time: " + task.startTime + "<br>End Time: " + task.endTime + "</html>");
-        Dimension preferredSize = dummyLabel.getPreferredSize();
-        taskButton.setPreferredSize(preferredSize);
-        taskButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,preferredSize.height));
-        taskButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("todo list updated");
+        // Fetch the sorted list of tasks from the data model
+        List<Task> sortedTasks = TaskDataModel.getInstance().getSortedTasks();  // assuming getSortedTasks sorts and returns tasks
 
+        // Add buttons for each sorted task
+        for (Task t : sortedTasks) {
+            JButton taskButton = new JButton("<html>Task: " + t.name + "<br>Date: " + t.date + "<br>Start Time: " + t.startTime + "<br>End Time: " + t.endTime + "</html>");
 
-            }
-        });
-        todoPanel.add(taskButton);
+            JLabel dummyLabel = new JLabel("<html>Task: " + t.name + "<br>Date: " + t.date + "<br>Start Time: " + t.startTime + "<br>End Time: " + t.endTime + "</html>");
+            Dimension preferredSize = dummyLabel.getPreferredSize();
+            taskButton.setPreferredSize(preferredSize);
+            taskButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, preferredSize.height));
+            taskButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("Task button clicked");
+                }
+            });
+            todoPanel.add(taskButton);
+        }
+
+        // Revalidate and repaint the panel to reflect the changes
         todoPanel.revalidate();
+        todoPanel.repaint();
     }
 }

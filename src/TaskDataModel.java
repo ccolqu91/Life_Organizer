@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,5 +27,19 @@ public class TaskDataModel {
         for(TaskObserver observer:observers){
             observer.taskAdded(task);
         }
+    }
+    public List<Task> getTasksForDate(LocalDate date){
+
+        List<Task> tasksForDate = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.date.equals(date.toString())) {
+                tasksForDate.add(task);
+            }
+        }
+        return tasksForDate;
+    }
+    public List<Task> getSortedTasks() {
+        Collections.sort(tasks);
+        return tasks;
     }
 }

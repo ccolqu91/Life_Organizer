@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class DailyView implements ActionListener, TaskObserver {
@@ -20,22 +21,16 @@ public class DailyView implements ActionListener, TaskObserver {
 
         currentDay = selectedDate;
 
-        //Daily View list
-        //dailyListModel = new DefaultListModel<>();
-        //dailyList = new JList<>(dailyListModel);
-        //JScrollPane dailyListScrollPane = new JScrollPane(dailyList);
-        //dailyListScrollPane.setBounds(200,100,400,300);
-
         dailyListPanel = new JPanel();
         dailyListPanel.setLayout(new BoxLayout(dailyListPanel, BoxLayout.Y_AXIS));
         JScrollPane dailyListScrollPane = new JScrollPane(dailyListPanel);
         dailyListScrollPane.setBounds(200, 100, 400, 300);
 
         monthLabel = new JLabel(formatDateWithSuffix(currentDay));
-        monthLabel.setBounds(450, 50, 100, 25);
+        monthLabel.setBounds(400, 50, 100, 25);
 
         JButton prevMonthButton = new JButton("<");
-        prevMonthButton.setBounds(300, 50, 50, 25);
+        prevMonthButton.setBounds(275, 50, 50, 25);
         prevMonthButton.setActionCommand("prev");
         prevMonthButton.addActionListener(this);
 
@@ -49,7 +44,6 @@ public class DailyView implements ActionListener, TaskObserver {
         createTaskButton.setActionCommand("create");
         createTaskButton.addActionListener(this);
 
-        //panel settings
         dailyPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         dailyPanel.setLayout(null);
         dailyPanel.add(dailyListScrollPane);
@@ -58,7 +52,6 @@ public class DailyView implements ActionListener, TaskObserver {
         dailyPanel.add(nextMonthButton);
         dailyPanel.add(createTaskButton);
 
-        //Frame settings
         dailyFrame.add(dailyPanel);
         dailyFrame.setSize(800, 600);
         dailyFrame.setTitle("Life Organizer - Daily View");
@@ -98,15 +91,29 @@ public class DailyView implements ActionListener, TaskObserver {
             SwingUtilities.invokeLater(() -> new CreateTask(currentDay));
         } else if ("prev".equals(command)) {
             currentDay = currentDay.minusDays(1);
+            refreshDailyList();
         } else if ("next".equals(command)) {
             currentDay = currentDay.plusDays(1);
+            refreshDailyList();
         }
         monthLabel.setText(formatDateWithSuffix(currentDay));
 
     }
 
-    @Override
-    public void taskAdded(Task task) {
+    private void refreshDailyList(){
+        dailyListPanel.removeAll();
+
+        List<Task> tasksForDay = TaskDataModel.getInstance().getTasksForDate(currentDay);
+        tasksForDay.sort((t1,t2) -> t1.startTime.compareTo(t2.startTime));
+
+        for(Task task : tasksForDay){
+            addTaskButton(task);
+        }
+        dailyListPanel.revalidate();
+        dailyListPanel.repaint();
+    }
+
+    private void addTaskButton(Task task){
         JButton taskButton = new JButton("<html>Task: " + task.name + "<br>Date: " + task.date + "<br>Start Time: " + task.startTime + "<br>End Time: " + task.endTime + "</html>");
 
         JLabel dummyLabel = new JLabel("<html>Task: " + task.name + "<br>Date: " + task.date + "<br>Start Time: " + task.startTime + "<br>End Time: " + task.endTime + "</html>");
@@ -122,6 +129,12 @@ public class DailyView implements ActionListener, TaskObserver {
             }
         });
         dailyListPanel.add(taskButton);
-        dailyListPanel.revalidate();
+    }
+    @Override
+    public void taskAdded(Task task) {
+
+        if(task.date.equals(currentDay.toString())){
+            refreshDailyList();
+        }
     }
 }
